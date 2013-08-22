@@ -1,32 +1,12 @@
-/**
- * Created with IntelliJ IDEA.
- * User: james
- * Date: 8/21/13
- * Time: 5:25 PM
- * To change this template use File | Settings | File Templates.
- */
 package eventbus_test
 
 import (
-	"github.com/jamesharr/eventbus"
-	"reflect"
 	"testing"
 	"math/rand"
+	"github.com/jamesharr/eventbus"
 )
 
-func assertSame(t *testing.T, a, b interface{}, message string) {
-	if a != b {
-		t.Errorf("%#v == %#v assert failed. %s", a, b, message)
-	}
-}
-
-func assertEq(t *testing.T, a, b interface{}, message string) {
-	if !reflect.DeepEqual(a, b) {
-		t.Errorf("%#v == %#v assert failed. %s", a, b, message)
-	}
-}
-
-func FillAndDrain(t *testing.T, items []interface{}, input chan eventbus.Message, output chan eventbus.Message) {
+func ShimFillAndDrain(t *testing.T, items []interface{}, input chan eventbus.Message, output chan eventbus.Message) {
 
 	// Send all
 	for _,item := range items {
@@ -47,7 +27,7 @@ func FillAndDrain(t *testing.T, items []interface{}, input chan eventbus.Message
 		}
 	}
 
-	assertEq(t, items, items_received, "Item Equivalency & Ordering test")
+	AssertEq(t, items, items_received, "Item Equivalency & Ordering test")
 }
 
 func createShim() (chan eventbus.Message, chan eventbus.Message) {
@@ -57,23 +37,23 @@ func createShim() (chan eventbus.Message, chan eventbus.Message) {
 	return input, output
 }
 
-func TestEmpty(t *testing.T) {
+func TestShimEmpty(t *testing.T) {
 	input, output := createShim()
 	items := []interface{}{}
-	FillAndDrain(t, items, input, output)
+	ShimFillAndDrain(t, items, input, output)
 }
 
-func TestSmall(t *testing.T) {
+func TestShimSmall(t *testing.T) {
 	input, output := createShim()
 	items := []interface{}{5,6,7,8,9}
-	FillAndDrain(t, items, input, output)
+	ShimFillAndDrain(t, items, input, output)
 }
 
-func TestLarge(t *testing.T) {
+func TestShimLarge(t *testing.T) {
 	input, output := createShim()
 	items := make([]interface{}, 1000)
 	for i:= 0; i<len(items); i++ {
 		items[i] = rand.Int63()
 	}
-	FillAndDrain(t, items, input, output)
+	ShimFillAndDrain(t, items, input, output)
 }

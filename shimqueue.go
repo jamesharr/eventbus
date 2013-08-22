@@ -1,7 +1,5 @@
 package eventbus
 
-type Message interface{}
-
 type shimQueue struct {
 	// Listener channel
 	input <-chan Message
@@ -11,13 +9,6 @@ type shimQueue struct {
 
 	// Queue
 	queue []Message
-}
-
-// Create a queue shim
-func CreateShimQueueFromInput(input <-chan Message) (output chan<- Message) {
-	output = make(chan<- Message)
-	CreateShimQueue(input, output)
-	return
 }
 
 // Create a queue shim
