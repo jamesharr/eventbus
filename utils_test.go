@@ -1,8 +1,8 @@
 package eventbus_test
 
 import (
-	"testing"
 	"reflect"
+	"testing"
 )
 
 func AssertSame(t *testing.T, a, b interface{}, message string) {

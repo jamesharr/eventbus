@@ -8,14 +8,14 @@ type EventBus struct {
 	input chan Message
 
 	// Avenue for registering handlers
-	register chan Handler
+	register   chan Handler
 	unregister chan Handler
 
 	// Channel never sends, will be closed when bus is being shut down
 	close chan Message
 }
 
-func CreateEventBus() (* EventBus) {
+func CreateEventBus() *EventBus {
 	bus := &EventBus{}
 	bus.input = make(Handler)
 	bus.register = make(chan Handler)
@@ -25,23 +25,23 @@ func CreateEventBus() (* EventBus) {
 	return bus
 }
 
-func (bus * EventBus) Emit(msg Message) {
+func (bus *EventBus) Emit(msg Message) {
 	bus.input <- msg
 }
 
-func (bus * EventBus) Close() {
+func (bus *EventBus) Close() {
 	close(bus.close)
 }
 
-func (bus * EventBus) Register(h Handler) {
+func (bus *EventBus) Register(h Handler) {
 	bus.register <- h
 }
 
-func (bus * EventBus) Unregister(h Handler) {
+func (bus *EventBus) Unregister(h Handler) {
 	bus.unregister <- h
 }
 
-func (bus * EventBus) run() {
+func (bus *EventBus) run() {
 
 	// A list of handlers and their corresponding shim queues.
 	// The shim queue ensures that a slow handler won't bog down the event emitter.
@@ -82,7 +82,7 @@ func (bus * EventBus) run() {
 	}
 
 	// Close all our shim queues
-	for _,shim := range handlers {
+	for _, shim := range handlers {
 		close(shim)
 	}
 }
