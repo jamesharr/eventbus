@@ -4,3 +4,6 @@ go:
   - 1.0
   - 1.1
   - tip
+
+before_script:
+  - go get github.com/bmizerany/assert

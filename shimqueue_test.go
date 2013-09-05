@@ -1,6 +1,7 @@
 package eventbus_test
 
 import (
+	"github.com/bmizerany/assert"
 	"github.com/jamesharr/eventbus"
 	"math/rand"
 	"testing"
@@ -27,7 +28,7 @@ func ShimFillAndDrain(t *testing.T, items []interface{}, input chan eventbus.Mes
 		}
 	}
 
-	AssertEq(t, items, items_received, "Item Equivalency & Ordering test")
+	assert.Equal(t, items, items_received, "Item equivalency & Ordering test")
 }
 
 func createShim() (chan eventbus.Message, chan eventbus.Message) {

@@ -1,6 +1,7 @@
 package eventbus_test
 
 import (
+	"github.com/bmizerany/assert"
 	"github.com/jamesharr/eventbus"
 	"testing"
 )
@@ -45,7 +46,7 @@ func TestBusShort(t *testing.T) {
 	}
 	eb.Close()
 
-	AssertEq(t, message_list, <-h1.results, "Handler 1 received items")
+	assert.Equal(t, message_list, <-h1.results, "Handler 1 received items")
 }
 
 func TestMultipleListeners(t *testing.T) {
@@ -61,6 +62,6 @@ func TestMultipleListeners(t *testing.T) {
 	}
 	eb.Close()
 
-	AssertEq(t, message_list, <-h1.results, "Handler 1 received items")
-	AssertEq(t, message_list, <-h2.results, "Handler 2 received items")
+	assert.Equal(t, message_list, <-h1.results, "Handler 1 received items")
+	assert.Equal(t, message_list, <-h2.results, "Handler 2 received items")
 }

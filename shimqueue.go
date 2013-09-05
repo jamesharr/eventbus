@@ -1,5 +1,7 @@
 package eventbus
 
+// Simple expanding queue structure that can be thrown between a sender/receiver.
+// This can effectively emulate a channel with unrestricted buffering.
 type shimQueue struct {
 	// Listener channel
 	input <-chan Message

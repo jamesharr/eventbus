@@ -1,8 +1,16 @@
 package eventbus
 
+// Item sent on the eventbus
 type Message interface{}
+
+// Receiver of events
 type Handler chan Message
 
+// A simplistic pub/sub system.
+//
+// * All methods are thread/GoRoutine safe. See Close() for some related caveats
+// * Slow/laggy handlers should not slow down routines Emit()ing events.
+// * All messages will be received in the same order on all handlers.
 type EventBus struct {
 	// Messages/Events are emitted through this
 	input chan Message
@@ -15,6 +23,7 @@ type EventBus struct {
 	close chan Message
 }
 
+// Create an EventBus and start all related GoRoutines.
 func CreateEventBus() *EventBus {
 	bus := &EventBus{}
 	bus.input = make(Handler)
@@ -25,18 +34,25 @@ func CreateEventBus() *EventBus {
 	return bus
 }
 
+// Emit a message onto the bus
 func (bus *EventBus) Emit(msg Message) {
 	bus.input <- msg
 }
 
+// Shutdown the event bus.
+//
+// This will drain all current messages from the queues before closing the handler channels passed to Register().
+// After closing an EventBus, any attempt to Emit() a message will cause a panic.
 func (bus *EventBus) Close() {
 	close(bus.close)
 }
 
+// Register a message handler.
 func (bus *EventBus) Register(h Handler) {
 	bus.register <- h
 }
 
+// Unregister an event handler.
 func (bus *EventBus) Unregister(h Handler) {
 	bus.unregister <- h
 }
