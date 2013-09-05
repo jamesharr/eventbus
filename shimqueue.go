@@ -6,9 +6,6 @@ type shimQueue struct {
 
 	// Emitter channel
 	output chan<- Message
-
-	// Queue
-	queue []Message
 }
 
 // Create a queue shim
@@ -16,51 +13,49 @@ func CreateShimQueue(input <-chan Message, output chan<- Message) {
 	var shim shimQueue
 	shim.input = input
 	shim.output = output
-	shim.queue = make([]Message, 0)
 	go shim.run()
 }
 
 func (shim *shimQueue) run() {
 	// Main loop -- recv+queue messages, send+deque messages
+	queue := make([]Message, 0)
 	done := false
+
+	var outMsg Message
+	var outChan chan<- Message
+
+	// Event loop with items in queue
 	for !done {
-		if len(shim.queue) > 0 {
-			// Event loop with items in queue
-			select {
 
-			case msg, ok := <-shim.input:
-				// Activity on input queue
-				if ok {
-					shim.queue = append(shim.queue, msg)
-				} else {
-					done = true
-				}
-
-			case shim.output <- shim.queue[0]:
-				// Item sent on receive queue
-				shim.queue = shim.queue[1:]
-			}
+		if len(queue) > 0 {
+			outMsg = queue[0]
+			outChan = shim.output
 		} else {
-			// Event loop without queue processing
-			select {
+			outChan = nil
+		}
 
-			case msg, ok := <-shim.input:
-				// Activity on input queue
-				if ok {
-					shim.queue = append(shim.queue, msg)
-				} else {
-					done = true
-				}
+		select {
+
+		case msg, ok := <-shim.input:
+			// Activity on input queue
+			if ok {
+				queue = append(queue, msg)
+			} else {
+				done = true
 			}
+
+		case outChan <- outMsg:
+			// Item sent on receive queue
+			queue = queue[1:]
 		}
 	}
 
 	// Drain queue
-	for _, msg := range shim.queue {
+	for _, msg := range queue {
 		shim.output <- msg
 	}
 
 	// Tear down some things
 	close(shim.output)
-	shim.queue = []Message{}
+	queue = []Message{}
 }
