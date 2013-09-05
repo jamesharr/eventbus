@@ -8,9 +8,8 @@ type Handler chan Message
 
 // A simplistic pub/sub system.
 //
-// * All methods are thread/GoRoutine safe. See Close() for some related caveats
-// * Slow/laggy handlers should not slow down routines Emit()ing events.
-// * All messages will be received in the same order on all handlers.
+// All methods are thread/GoRoutine safe. See Close() for some related caveats. Slow/laggy handlers should not slow
+// down routines Emit()ing events. All messages will be received in the same order on all handlers.
 type EventBus struct {
 	// Messages/Events are emitted through this
 	input chan Message

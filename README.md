@@ -48,3 +48,6 @@ func main() {
 
 }
 ```
+
+## API Documentation
+[API Documentation](http://godoc.org/github.com/jamesharr/eventbus)
