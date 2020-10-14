@@ -1,3 +1,9 @@
+# Project Status - Archived
+
+I'm considering this project archived for a variety of reasons 1) I haven't touched it in a long time 2) there are much better event bus options out there 3) I think since the original authoring of this package that go idioms have become more clear and it's likely there's better things out there.
+
+Never the less, this code is still available for reference for anyone who wants to look at it.
+
 # A concurrent EventBus for Go
 
 [![build status](https://secure.travis-ci.org/jamesharr/eventbus.png)](http://travis-ci.org/jamesharr/eventbus)
